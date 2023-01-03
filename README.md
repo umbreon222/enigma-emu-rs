@@ -1,6 +1,6 @@
 # Enigma Simulator
 
-An Enigma machine simulator written in Rust for funsies.
+An Enigma machine simulator written in Rust for funzies.
 
 ## About The Project
 
