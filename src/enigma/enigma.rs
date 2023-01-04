@@ -196,9 +196,44 @@ impl Enigma {
         }
     }
 
-    pub fn encrypt(&mut self, input_string: &str) -> String {
+    pub fn run_simulation(&mut self, input_string: &str) -> String {
         let input = Enigma::string_to_letter_indices(input_string);
-        let output = Enigma::letter_indices_to_string(input);
+        let transformed_input = self.transform_input(input);
+        let output = Enigma::letter_indices_to_string(transformed_input);
+
+        output
+    }
+
+    fn transform_input(&mut self, input: Vec<usize>) -> Vec<usize> {
+        let mut output: Vec<usize> = vec![];
+        for alphabet_index in input {
+            let mut index = alphabet_index;
+            // Feed forward through rotors
+            index = self.rotors[0].feed_input(index, true);
+            index = self.rotors[1].feed_input(index, true);
+            index = self.rotors[2].feed_input(index, true);
+            // Feed forward through reflector
+            index = self.rotors[3].feed_input(index, true);
+            // Feed backwards through rotors
+            index = self.rotors[2].feed_input(index, false);
+            index = self.rotors[1].feed_input(index, false);
+            index = self.rotors[0].feed_input(index, false);
+            output.push(index);
+
+            // Simulator rotor rotations
+            let mut should_rotate_next_rotor = self.rotors[0].increment_position();
+            if should_rotate_next_rotor {
+                should_rotate_next_rotor = self.rotors[1].increment_position();
+            }
+
+            if should_rotate_next_rotor {
+                should_rotate_next_rotor = self.rotors[2].increment_position();
+            }
+
+            if should_rotate_next_rotor {
+                self.rotors[3].increment_position();
+            }
+        }
 
         output
     }
