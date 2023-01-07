@@ -1,4 +1,4 @@
-pub use crate::enigma::Rotor;
+pub use crate::enigma::{ Rotor, Reflector };
 
 const LOWER_CASE_LETTERS: [char; 26] = [
     'a',
@@ -31,7 +31,6 @@ const LOWER_CASE_LETTERS: [char; 26] = [
 
 const AVAILABLE_ROTORS: [Rotor; 3] = [
     Rotor {
-        is_reflector: false,
         mappings: [
             (9, 15),
             (2, 18),
@@ -64,7 +63,6 @@ const AVAILABLE_ROTORS: [Rotor; 3] = [
         position: 0
     },
     Rotor {
-        is_reflector: false,
         mappings: [
             (0, 25),
             (15, 8),
@@ -97,7 +95,6 @@ const AVAILABLE_ROTORS: [Rotor; 3] = [
         position: 0
     },
     Rotor {
-        is_reflector: false,
         mappings: [
             (16, 8),
             (0, 20),
@@ -131,44 +128,30 @@ const AVAILABLE_ROTORS: [Rotor; 3] = [
     }
 ];
 
- const AVAILABLE_REFLECTORS: [Rotor; 1] = [
-    Rotor {
-        is_reflector: true,
+ const AVAILABLE_REFLECTORS: [Reflector; 1] = [
+    Reflector {
         mappings: [
-            (6, 3),
-            (4, 17),
-            (21, 21),
-            (2, 14),
-            (23, 4),
-            (0, 0),
-            (3, 20),
-            (5, 2),
-            (24, 18),
-            (18, 15),
-            (8, 23),
-            (22, 25),
-            (25, 12),
-            (13, 5),
-            (11, 16),
-            (16, 1),
-            (14, 13),
-            (17, 24),
-            (12, 8),
-            (7, 6),
-            (20, 22),
-            (19, 7),
-            (9, 11),
-            (1, 10),
-            (10, 9),
-            (15, 19)
+            (1, 2),
+            (3, 4),
+            (5, 6),
+            (7, 8),
+            (9, 10),
+            (11, 12),
+            (13, 14),
+            (15, 16),
+            (17, 18),
+            (19, 20),
+            (21, 22),
+            (23, 24),
+            (25, 26),
         ],
-        notch: 25,
         position: 0
     }
 ];
 
 pub struct Enigma {
-    rotors: [Rotor; 4], // The fourth "Rotor" is the reflector
+    rotors: [Rotor; 3],
+    reflector: Reflector,
     plug_board: Rotor
 }
 
@@ -179,21 +162,24 @@ impl Enigma {
             AVAILABLE_ROTORS[rotor_numbers[0]],
             AVAILABLE_ROTORS[rotor_numbers[1]],
             AVAILABLE_ROTORS[rotor_numbers[2]],
-            AVAILABLE_REFLECTORS[reflector_number]
         ];
 
-        let plug_board = Rotor::new(false, plug_board_mappings, 25);
+        let reflector = AVAILABLE_REFLECTORS[reflector_number];
+        let plug_board = Rotor::new(plug_board_mappings, 25);
 
         Enigma {
             rotors,
+            reflector,
             plug_board
         }
     }
 
     pub fn set_initial_rotor_positions(&mut self, initial_rotor_positions: [usize; 4]) {
-        for i in 0..4 {
+        for i in 0..3 {
             self.rotors[i].position = initial_rotor_positions[i];
         }
+
+        self.reflector.position = initial_rotor_positions[3];
     }
 
     pub fn run_simulation(&mut self, input_string: &str) -> String {
@@ -213,7 +199,7 @@ impl Enigma {
             index = self.rotors[1].feed_input(index, true);
             index = self.rotors[2].feed_input(index, true);
             // Feed forward through reflector
-            index = self.rotors[3].feed_input(index, true);
+            index = self.reflector.feed_input(index);
             // Feed backwards through rotors
             index = self.rotors[2].feed_input(index, false);
             index = self.rotors[1].feed_input(index, false);
@@ -231,7 +217,7 @@ impl Enigma {
             }
 
             if should_rotate_next_rotor {
-                self.rotors[3].increment_position();
+                self.reflector.increment_position();
             }
         }
 

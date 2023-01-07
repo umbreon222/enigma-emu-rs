@@ -1,15 +1,13 @@
 #[derive(Clone, Copy)]
 pub struct Rotor {
-    pub is_reflector: bool,
     pub mappings: [(usize, usize); 26],
     pub notch: usize,
     pub position: usize
 }
 
 impl Rotor {
-    pub fn new(is_reflector: bool, mappings: [(usize, usize); 26], notch: usize) -> Rotor {
+    pub fn new(mappings: [(usize, usize); 26], notch: usize) -> Rotor {
         Rotor {
-            is_reflector,
             mappings,
             notch: notch.into(),
             position: 0
@@ -17,7 +15,7 @@ impl Rotor {
     }
 
     pub fn feed_input(&self, index: usize, forward: bool) -> usize {
-        let mut transformed_index: usize = index.into();
+        let mut transformed_index: usize = index;
         if forward {
             transformed_index += self.position;
         } else {
