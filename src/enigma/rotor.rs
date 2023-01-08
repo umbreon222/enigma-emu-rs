@@ -1,12 +1,12 @@
 #[derive(Clone, Copy)]
 pub struct Rotor {
-    pub mappings: [(usize, usize); 26],
+    pub mappings: [usize; 26],
     pub notch: usize,
     pub position: usize
 }
 
 impl Rotor {
-    pub fn new(mappings: [(usize, usize); 26], notch: usize) -> Rotor {
+    pub fn new(mappings: [usize; 26], notch: usize) -> Rotor {
         Rotor {
             mappings,
             notch: notch.into(),
@@ -25,12 +25,22 @@ impl Rotor {
 
         // Normalize the index by wrapping around
         transformed_index %= 26;
-        let mapping = self.mappings[transformed_index];
+        // DEBUG
+        println!("Rotor transformed index to {}", transformed_index);
         if forward {
-            mapping.1
+            self.mappings[transformed_index]
         } else {
-            mapping.0
+            self.get_reversed_mappings()[transformed_index]
         }
+    }
+
+    pub fn get_reversed_mappings(&self) -> [usize; 26] {
+        let mut reversed: [usize; 26] = self.mappings;
+        for i in 0..26 {
+            reversed[self.mappings[i]] = i;
+        }
+        
+        reversed
     }
 
     pub fn increment_position(&mut self) -> bool {

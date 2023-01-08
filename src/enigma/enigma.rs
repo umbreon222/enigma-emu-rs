@@ -32,96 +32,96 @@ const LOWER_CASE_LETTERS: [char; 26] = [
 const AVAILABLE_ROTORS: [Rotor; 3] = [
     Rotor {
         mappings: [
-            (9, 15),
-            (2, 18),
-            (11, 6),
-            (13, 20),
-            (4, 22),
-            (10, 16),
-            (25, 17),
-            (12, 1),
-            (1, 5),
-            (22, 8),
-            (6, 13),
-            (20, 21),
-            (7, 19),
-            (24, 9),
-            (17, 3),
-            (18, 0),
-            (3, 24),
-            (8, 12),
-            (19, 23),
-            (16, 10),
-            (23, 14),
-            (15, 11),
-            (14, 7),
-            (5, 2),
-            (0, 25),
-            (21, 4)
+            9,
+            2,
+            11,
+            13,
+            4,
+            10,
+            25,
+            12,
+            1,
+            22,
+            6,
+            20,
+            7,
+            24,
+            17,
+            18,
+            3,
+            8,
+            19,
+            16,
+            23,
+            15,
+            14,
+            5,
+            0,
+            21
         ],
         notch: 6,
         position: 0
     },
     Rotor {
         mappings: [
-            (0, 25),
-            (15, 8),
-            (5, 12),
-            (12, 13),
-            (3, 10),
-            (2, 18),
-            (18, 15),
-            (16, 11),
-            (20, 4),
-            (8, 22),
-            (24, 19),
-            (4, 16),
-            (19, 20),
-            (14, 24),
-            (23, 2),
-            (9, 7),
-            (25, 9),
-            (13, 1),
-            (1, 21),
-            (7, 5),
-            (6, 3),
-            (22, 0),
-            (21, 23),
-            (11, 17),
-            (10, 14),
-            (17, 6)
+            0,
+            15,
+            5,
+            12,
+            3,
+            2,
+            18,
+            16,
+            20,
+            8,
+            24,
+            4,
+            19,
+            14,
+            23,
+            9,
+            25,
+            13,
+            1,
+            7,
+            6,
+            22,
+            21,
+            11,
+            10,
+            17
         ],
         notch: 1,
         position: 0
     },
     Rotor {
         mappings: [
-            (16, 8),
-            (0, 20),
-            (20, 6),
-            (18, 16),
-            (24, 17),
-            (4, 7),
-            (1, 18),
-            (9, 25),
-            (10, 4),
-            (12, 19),
-            (21, 5),
-            (25, 14),
-            (13, 2),
-            (7, 9),
-            (5, 21),
-            (15, 1),
-            (3, 0),
-            (23, 3),
-            (11, 10),
-            (22, 23),
-            (17, 12),
-            (2, 24),
-            (19, 13),
-            (8, 11),
-            (14, 22),
-            (6, 15)
+            16,
+            0,
+            20,
+            18,
+            24,
+            4,
+            1,
+            9,
+            10,
+            12,
+            21,
+            25,
+            13,
+            7,
+            5,
+            15,
+            3,
+            23,
+            11,
+            22,
+            17,
+            2,
+            19,
+            8,
+            14,
+            6
         ],
         notch: 0,
         position: 0
@@ -131,19 +131,32 @@ const AVAILABLE_ROTORS: [Rotor; 3] = [
  const AVAILABLE_REFLECTORS: [Reflector; 1] = [
     Reflector {
         mappings: [
-            (1, 2),
-            (3, 4),
-            (5, 6),
-            (7, 8),
-            (9, 10),
-            (11, 12),
-            (13, 14),
-            (15, 16),
-            (17, 18),
-            (19, 20),
-            (21, 22),
-            (23, 24),
-            (25, 26),
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10,
+            11,
+            12,
+            13,
+            14,
+            15,
+            16,
+            17,
+            18,
+            19,
+            20,
+            21,
+            22,
+            23,
+            24,
+            25,
         ],
         position: 0
     }
@@ -156,7 +169,7 @@ pub struct Enigma {
 }
 
 impl Enigma {
-    pub fn new(rotor_numbers: [usize; 3], reflector_number: usize, plug_board_mappings: [(usize, usize); 26]) -> Enigma {
+    pub fn new(rotor_numbers: [usize; 3], reflector_number: usize, plug_board_mappings: [usize; 26]) -> Enigma {
 
         let rotors = [
             AVAILABLE_ROTORS[rotor_numbers[0]],
@@ -194,19 +207,23 @@ impl Enigma {
         let mut output: Vec<usize> = vec![];
         for alphabet_index in input {
             let mut index = alphabet_index;
+            println!("Beginning transform on \"{}\"", index);
             // Feed forward through rotors
             index = self.rotors[0].feed_input(index, true);
-            index = self.rotors[1].feed_input(index, true);
-            index = self.rotors[2].feed_input(index, true);
+            println!("Output from rotor 1 \"{}\"", index);
+            /* DEBUG index = self.rotors[1].feed_input(index, true);
+            index = self.rotors[2].feed_input(index, true); */
             // Feed forward through reflector
             index = self.reflector.feed_input(index);
+            println!("Output from reflector \"{}\"", index);
             // Feed backwards through rotors
-            index = self.rotors[2].feed_input(index, false);
-            index = self.rotors[1].feed_input(index, false);
+            /* DEBUG index = self.rotors[2].feed_input(index, false);
+            index = self.rotors[1].feed_input(index, false); */
             index = self.rotors[0].feed_input(index, false);
+            println!("Output from rotor 1 \"{}\"", index);
             output.push(index);
 
-            // Simulator rotor rotations
+            /* DEBUG / Simulator rotor rotations
             let mut should_rotate_next_rotor = self.rotors[0].increment_position();
             if should_rotate_next_rotor {
                 should_rotate_next_rotor = self.rotors[1].increment_position();
@@ -218,7 +235,7 @@ impl Enigma {
 
             if should_rotate_next_rotor {
                 self.reflector.increment_position();
-            }
+            } */
         }
 
         output

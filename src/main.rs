@@ -2,44 +2,48 @@ pub mod enigma;
 
 pub use enigma::Enigma;
 
-const PLUG_BOARD_MAPPINGS: [(usize, usize); 26] = [
-    (19, 7),
-    (9, 24),
-    (13, 9),
-    (16, 19),
-    (10, 21),
-    (20, 3),
-    (2, 25),
-    (4, 13),
-    (22, 17),
-    (6, 23),
-    (25, 10),
-    (3, 20),
-    (21, 15),
-    (17, 4),
-    (8, 14),
-    (23, 8),
-    (11, 22),
-    (12, 16),
-    (5, 11),
-    (14, 2),
-    (1, 5),
-    (15, 18),
-    (18, 12),
-    (0, 0),
-    (7, 6),
-    (24, 1)
+const PLUG_BOARD_MAPPINGS: [usize; 26] = [
+    19,
+    9,
+    13,
+    16,
+    10,
+    20,
+    2,
+    4,
+    22,
+    6,
+    25,
+    3,
+    21,
+    17,
+    8,
+    23,
+    11,
+    12,
+    5,
+    14,
+    1,
+    15,
+    18,
+    0,
+    7,
+    24
 ];
 
 fn main() {
     let mut enigma_machine_simulator = Enigma::new([0, 1, 2], 0, PLUG_BOARD_MAPPINGS);
-    enigma_machine_simulator.set_initial_rotor_positions([1, 0, 0, 0]);
+    enigma_machine_simulator.set_initial_rotor_positions([0, 0, 0, 0]);
     println!("Running simulation");
-    println!("Inputting \"helloworld\" to Enigma");
-    let output = enigma_machine_simulator.run_simulation("helloworld");
+    /* DEBUG println!("Inputting \"helloworld\" to Enigma");
+    let output = enigma_machine_simulator.run_simulation("helloworld"); */
+    // DEBUG
+    let output = enigma_machine_simulator.run_simulation("a");
     println!("Enigma output: \"{}\"", output);
     println!("Resetting Enigma rotor positions");
-    enigma_machine_simulator.set_initial_rotor_positions([1, 0, 0, 0]);
+    enigma_machine_simulator.set_initial_rotor_positions([0, 0, 0, 0]);
+    // DEBUG
+    println!();
     println!("Feeding output back into Enigma");
     println!("Enigma output: \"{}\"", enigma_machine_simulator.run_simulation(&output));
 }
