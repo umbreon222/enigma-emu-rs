@@ -33,17 +33,13 @@ const PLUG_BOARD_MAPPINGS: [usize; 26] = [
 
 fn main() {
     let mut enigma_machine_simulator = Enigma::new([0, 1, 2], 0, PLUG_BOARD_MAPPINGS);
-    enigma_machine_simulator.set_initial_rotor_positions([0, 0, 0, 0]);
+    enigma_machine_simulator.set_initial_rotor_positions([0, 0, 0]);
     println!("Running simulation");
-    /* DEBUG println!("Inputting \"helloworld\" to Enigma");
-    let output = enigma_machine_simulator.run_simulation("helloworld"); */
-    // DEBUG
-    let output = enigma_machine_simulator.run_simulation("a");
+    println!("Inputting \"helloworld\" to Enigma");
+    let output = enigma_machine_simulator.run_simulation("helloworld");
     println!("Enigma output: \"{}\"", output);
     println!("Resetting Enigma rotor positions");
-    enigma_machine_simulator.set_initial_rotor_positions([0, 0, 0, 0]);
-    // DEBUG
-    println!();
+    enigma_machine_simulator.set_initial_rotor_positions([0, 0, 0]);
     println!("Feeding output back into Enigma");
     println!("Enigma output: \"{}\"", enigma_machine_simulator.run_simulation(&output));
 }

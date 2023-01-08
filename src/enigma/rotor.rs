@@ -25,8 +25,6 @@ impl Rotor {
 
         // Normalize the index by wrapping around
         transformed_index %= 26;
-        // DEBUG
-        println!("Rotor transformed index to {}", transformed_index);
         if forward {
             self.mappings[transformed_index]
         } else {

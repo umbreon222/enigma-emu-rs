@@ -131,34 +131,20 @@ const AVAILABLE_ROTORS: [Rotor; 3] = [
  const AVAILABLE_REFLECTORS: [Reflector; 1] = [
     Reflector {
         mappings: [
-            0,
-            1,
-            2,
-            3,
-            4,
-            5,
-            6,
-            7,
-            8,
-            9,
-            10,
-            11,
-            12,
-            13,
-            14,
-            15,
-            16,
-            17,
-            18,
-            19,
-            20,
-            21,
-            22,
-            23,
-            24,
-            25,
-        ],
-        position: 0
+            (0, 1),
+            (2, 3),
+            (4, 5),
+            (6, 7),
+            (8, 9),
+            (10, 11),
+            (12, 13),
+            (14, 15),
+            (16, 17),
+            (18, 19),
+            (20, 21),
+            (22, 23),
+            (24, 25)
+        ]
     }
 ];
 
@@ -187,12 +173,10 @@ impl Enigma {
         }
     }
 
-    pub fn set_initial_rotor_positions(&mut self, initial_rotor_positions: [usize; 4]) {
+    pub fn set_initial_rotor_positions(&mut self, initial_rotor_positions: [usize; 3]) {
         for i in 0..3 {
             self.rotors[i].position = initial_rotor_positions[i];
         }
-
-        self.reflector.position = initial_rotor_positions[3];
     }
 
     pub fn run_simulation(&mut self, input_string: &str) -> String {
@@ -211,31 +195,27 @@ impl Enigma {
             // Feed forward through rotors
             index = self.rotors[0].feed_input(index, true);
             println!("Output from rotor 1 \"{}\"", index);
-            /* DEBUG index = self.rotors[1].feed_input(index, true);
-            index = self.rotors[2].feed_input(index, true); */
+            index = self.rotors[1].feed_input(index, true);
+            index = self.rotors[2].feed_input(index, true);
             // Feed forward through reflector
             index = self.reflector.feed_input(index);
             println!("Output from reflector \"{}\"", index);
             // Feed backwards through rotors
-            /* DEBUG index = self.rotors[2].feed_input(index, false);
-            index = self.rotors[1].feed_input(index, false); */
+            index = self.rotors[2].feed_input(index, false);
+            index = self.rotors[1].feed_input(index, false);
             index = self.rotors[0].feed_input(index, false);
             println!("Output from rotor 1 \"{}\"", index);
             output.push(index);
 
-            /* DEBUG / Simulator rotor rotations
+            // Simulator rotor rotations
             let mut should_rotate_next_rotor = self.rotors[0].increment_position();
             if should_rotate_next_rotor {
                 should_rotate_next_rotor = self.rotors[1].increment_position();
             }
 
             if should_rotate_next_rotor {
-                should_rotate_next_rotor = self.rotors[2].increment_position();
+                self.rotors[2].increment_position();
             }
-
-            if should_rotate_next_rotor {
-                self.reflector.increment_position();
-            } */
         }
 
         output
